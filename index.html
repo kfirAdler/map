@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Madrid Attractions Map</title>
+    <title>מפת אטרקציות - מדריד</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         html, body, #map {
@@ -39,9 +39,11 @@
             display: inline-block;
             width: 12px;
             height: 12px;
-            margin-right: 6px;
+            margin-left: 6px;
             border-radius: 50%;
         }
+        a { color: #007BFF; text-decoration: none; }
+        a:hover { text-decoration: underline; }
     </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -64,38 +66,80 @@
     const map = L.map('map').setView([40.4168, -3.7038], 14);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        attribution: 'Map data © OpenStreetMap contributors'
     }).addTo(map);
 
     const points = [
-        {name: "Puerta del Sol", coords: [40.416775, -3.703790], color: "blue"},
-        {name: "Statue of the Bear", coords: [40.416945, -3.703716], color: "blue"},
-        {name: "Kilometer Zero", coords: [40.416650, -3.703882], color: "blue"},
-        {name: "King Charles III Statue", coords: [40.417000, -3.703500], color: "blue"},
-        {name: "La Mallorquina", coords: [40.416950, -3.703000], color: "red"},
-        {name: "Plaza Mayor", coords: [40.415363, -3.707398], color: "blue"},
-        {name: "Mercado de San Miguel", coords: [40.415246, -3.709416], color: "red"},
-        {name: "Royal Palace", coords: [40.417978, -3.714312], color: "blue"},
-        {name: "Almudena Cathedral", coords: [40.415948, -3.714310], color: "blue"},
-        {name: "Teatro Real", coords: [40.418016, -3.710297], color: "purple"},
-        {name: "Plaza de Santa Ana", coords: [40.414650, -3.700800], color: "blue"},
-        {name: "Prado Museum", coords: [40.413780, -3.692127], color: "orange"},
-        {name: "Reina Sofia Museum", coords: [40.408676, -3.694144], color: "orange"},
-        {name: "Thyssen Museum", coords: [40.415260, -3.694481], color: "orange"},
-        {name: "Retiro Park", coords: [40.415260, -3.684516], color: "green"},
-        {name: "Legends: Football Museum", coords: [40.416200, -3.704800], color: "orange"},
-        {name: "Chocolatería San Ginés", coords: [40.416263, -3.707268], color: "red"},
-        {name: "Calle de Alcalá", coords: [40.418500, -3.701400], color: "blue"},
-        {name: "Paseo del Prado", coords: [40.413220, -3.693349], color: "blue"},
-        {name: "Gran Vía", coords: [40.420300, -3.705774], color: "blue"},
+        {
+            name: "פוארטה דל סול",
+            desc: "כיכר מרכזית וסמל העיר מדריד.",
+            time: "פתוח 24/7",
+            link: "https://goo.gl/maps/gdRhtVX14TuvYqXR9",
+            coords: [40.416775, -3.703790],
+            color: "blue"
+        },
+        {
+            name: "פסל הדוב ועץ התות",
+            desc: "הסמל הרשמי של מדריד.",
+            time: "פתוח תמיד",
+            link: "https://goo.gl/maps/SgukzP9y5yJFxhtG8",
+            coords: [40.416945, -3.703716],
+            color: "blue"
+        },
+        {
+            name: "Plaza Mayor",
+            desc: "כיכר היסטורית עם בתי קפה וארכיטקטורה מדהימה.",
+            time: "פתוח תמיד",
+            link: "https://goo.gl/maps/6VezLBUT5AZ7LeSx9",
+            coords: [40.415363, -3.707398],
+            color: "blue"
+        },
+        {
+            name: "Mercado de San Miguel",
+            desc: "שוק טאפאס מודרני ומעוצב.",
+            time: "10:00–24:00",
+            link: "https://goo.gl/maps/xpddf8A9pmsReFZSA",
+            coords: [40.415246, -3.709416],
+            color: "red"
+        },
+        {
+            name: "Palacio Real",
+            desc: "הארמון המלכותי של מדריד.",
+            time: "10:00–18:00",
+            link: "https://goo.gl/maps/Nu6A7gmp53eykeLR6",
+            coords: [40.417978, -3.714312],
+            color: "blue"
+        },
+        {
+            name: "Museo del Prado",
+            desc: "אחד ממוזיאוני האמנות החשובים בעולם.",
+            time: "10:00–20:00",
+            link: "https://goo.gl/maps/gENugjv6tPZFtQmS7",
+            coords: [40.413780, -3.692127],
+            color: "orange"
+        },
+        {
+            name: "פארק רטירו",
+            desc: "הפארק המרכזי של מדריד עם אגם וארמון זכוכית.",
+            time: "06:00–22:00",
+            link: "https://goo.gl/maps/WhtcNR17g7P2",
+            coords: [40.415260, -3.684516],
+            color: "green"
+        }
     ];
 
-    points.forEach((point, index) => {
+    points.forEach((point, idx) => {
+        const popupHTML = `
+            <strong>${idx + 1}. ${point.name}</strong><br>
+            ${point.desc}<br>
+            ⏰ ${point.time}<br>
+            📍 <a href="${point.link}" target="_blank">ניווט בגוגל</a>
+        `;
         L.circleMarker(point.coords, {
             color: point.color,
             radius: 8,
             fillOpacity: 0.9
-        }).addTo(map).bindPopup(`<strong>${index + 1}. ${point.name}</strong>`);
+        }).addTo(map).bindPopup(popupHTML);
     });
 
     function toggleLegend() {
