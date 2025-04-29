@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Madrid Attractions Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #legend {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            padding: 10px;
+            font-family: sans-serif;
+            font-size: 14px;
+            display: none;
+            z-index: 999;
+        }
+        #toggleButton {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            z-index: 1000;
+            padding: 8px 12px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .legend-color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 6px;
+            border-radius: 50%;
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+
+<button id="toggleButton" onclick="toggleLegend()">הצג / הסתר מקרא</button>
+
+<div id="legend">
+    <div><span class="legend-color" style="background: blue;"></span> אטרקציות כלליות</div>
+    <div><span class="legend-color" style="background: red;"></span> מסעדות ושווקים</div>
+    <div><span class="legend-color" style="background: orange;"></span> מוזיאונים</div>
+    <div><span class="legend-color" style="background: green;"></span> פארקים</div>
+    <div><span class="legend-color" style="background: purple;"></span> אתרי תרבות</div>
+</div>
+
+<div id="map"></div>
+
+<script>
+    const map = L.map('map').setView([40.4168, -3.7038], 14);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    const points = [
+        {name: "Puerta del Sol", coords: [40.416775, -3.703790], color: "blue"},
+        {name: "Statue of the Bear", coords: [40.416945, -3.703716], color: "blue"},
+        {name: "Kilometer Zero", coords: [40.416650, -3.703882], color: "blue"},
+        {name: "King Charles III Statue", coords: [40.417000, -3.703500], color: "blue"},
+        {name: "La Mallorquina", coords: [40.416950, -3.703000], color: "red"},
+        {name: "Plaza Mayor", coords: [40.415363, -3.707398], color: "blue"},
+        {name: "Mercado de San Miguel", coords: [40.415246, -3.709416], color: "red"},
+        {name: "Royal Palace", coords: [40.417978, -3.714312], color: "blue"},
+        {name: "Almudena Cathedral", coords: [40.415948, -3.714310], color: "blue"},
+        {name: "Teatro Real", coords: [40.418016, -3.710297], color: "purple"},
+        {name: "Plaza de Santa Ana", coords: [40.414650, -3.700800], color: "blue"},
+        {name: "Prado Museum", coords: [40.413780, -3.692127], color: "orange"},
+        {name: "Reina Sofia Museum", coords: [40.408676, -3.694144], color: "orange"},
+        {name: "Thyssen Museum", coords: [40.415260, -3.694481], color: "orange"},
+        {name: "Retiro Park", coords: [40.415260, -3.684516], color: "green"},
+        {name: "Legends: Football Museum", coords: [40.416200, -3.704800], color: "orange"},
+        {name: "Chocolatería San Ginés", coords: [40.416263, -3.707268], color: "red"},
+        {name: "Calle de Alcalá", coords: [40.418500, -3.701400], color: "blue"},
+        {name: "Paseo del Prado", coords: [40.413220, -3.693349], color: "blue"},
+        {name: "Gran Vía", coords: [40.420300, -3.705774], color: "blue"},
+    ];
+
+    points.forEach((point, index) => {
+        L.circleMarker(point.coords, {
+            color: point.color,
+            radius: 8,
+            fillOpacity: 0.9
+        }).addTo(map).bindPopup(`<strong>${index + 1}. ${point.name}</strong>`);
+    });
+
+    function toggleLegend() {
+        const legend = document.getElementById("legend");
+        legend.style.display = (legend.style.display === "none" || legend.style.display === "") ? "block" : "none";
+    }
+</script>
+
+</body>
+</html>
