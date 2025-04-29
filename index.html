@@ -65,11 +65,11 @@
 
 <script>
     const pastelColors = {
-        blue: '#a6cee3',
-        red: '#fdbf6f',
-        orange: '#cab2d6',
-        green: '#b2df8a',
-        purple: '#fccde5'
+        general: '#a6cee3',
+        markets: '#fdbf6f',
+        museums: '#cab2d6',
+        parks: '#b2df8a',
+        culture: '#fccde5'
     };
 
     const map = L.map('map').setView([40.4168, -3.7038], 14);
@@ -81,92 +81,141 @@
         maxZoom: 19
     }).addTo(map);
 
-    const points = [
-        {
-            name: "פוארטה דל סול",
-            desc: "כיכר מרכזית וסמל העיר מדריד.",
-            time: "פתוח 24/7",
-            coords: [40.416775, -3.703790],
-            color: "blue"
-        },
-        {
-            name: "פסל הדוב ועץ התות",
-            desc: "הסמל הרשמי של מדריד.",
-            time: "פתוח תמיד",
-            coords: [40.416945, -3.703716],
-            color: "blue"
-        },
-        {
-            name: "Plaza Mayor",
-            desc: "כיכר היסטורית עם בתי קפה וארכיטקטורה מדהימה.",
-            time: "פתוח תמיד",
-            coords: [40.415363, -3.707398],
-            color: "blue"
-        },
-        {
-            name: "Mercado de San Miguel",
-            desc: "שוק טאפאס מודרני ומעוצב.",
-            time: "10:00–24:00",
-            coords: [40.415246, -3.709416],
-            color: "red"
-        },
-        {
-            name: "Palacio Real",
-            desc: "הארמון המלכותי של מדריד.",
-            time: "10:00–18:00",
-            coords: [40.417978, -3.714312],
-            color: "blue"
-        },
-        {
-            name: "Museo del Prado",
-            desc: "אחד ממוזיאוני האמנות החשובים בעולם.",
-            time: "10:00–20:00",
-            coords: [40.413780, -3.692127],
-            color: "orange"
-        },
-        {
-            name: "פארק רטירו",
-            desc: "הפארק המרכזי של מדריד עם אגם וארמון זכוכית.",
-            time: "06:00–22:00",
-            coords: [40.415260, -3.684516],
-            color: "green"
-        }
-    ];
+    const data = {
+        general: [
+            {
+                name: "פוארטה דל סול",
+                desc: "כיכר מרכזית וסמל העיר מדריד.",
+                coords: [40.4168, -3.7038],
+                hours: "24/7"
+            },
+            {
+                name: "פסל הדוב ועץ התות",
+                desc: "הסמל הרשמי של מדריד.",
+                coords: [40.4169, -3.7037],
+                hours: "פתוח תמיד"
+            },
+            {
+                name: "פלאסה מאיור",
+                desc: "כיכר היסטורית עם בתי קפה וארכיטקטורה מדהימה.",
+                coords: [40.4154, -3.7074],
+                hours: "פתוח תמיד"
+            },
+            {
+                name: "הארמון המלכותי",
+                desc: "הארמון המלכותי של מדריד.",
+                coords: [40.4179, -3.7143],
+                hours: "10:00–18:00"
+            },
+            {
+                name: "קתדרלת אלמודנה",
+                desc: "קתדרלה מרשימה בסמוך לארמון המלכותי.",
+                coords: [40.4153, -3.7143],
+                hours: "10:00–20:00
+            }
+        ],
+        markets: [
+            {
+                name: "Mercado de San Miguel",
+                desc: "שוק טאפאס מודרני ומעוצב.",
+                coords: [40.4152, -3.7094],
+                hours: "10:00–24:00"
+            }
+        ],
+        museums: [
+            {
+                name: "Museo del Prado",
+                desc: "אחד ממוזיאוני האמנות החשובים בעולם.",
+                coords: [40.4138, -3.6921],
+                hours: "10:00–20:00"
+            }
+        ],
+        parks: [
+            {
+                name: "פארק רטירו",
+                desc: "פארק עם אגם וארמון זכוכית.",
+                coords: [40.4153, -3.6845],
+                hours: "06:00–22:00"
+            }
+        ],
+        culture: [
+            {
+                name: "תיאטרון ריאל",
+                desc: "בית האופרה הראשי של מדריד.",
+                coords: [40.4180, -3.7100],
+                hours: "לפי הופעות"
+            }
+        ]
+    };
 
     navigator.geolocation.getCurrentPosition(pos => {
         const userLat = pos.coords.latitude;
         const userLng = pos.coords.longitude;
 
-        points.forEach((point, idx) => {
-            const destination = `${point.coords[0]},${point.coords[1]}`;
-            const appleMapsUrl = `https://maps.apple.com/?saddr=${userLat},${userLng}&daddr=${destination}`;
+        Object.entries(data).forEach(([category, points]) => {
+            points.forEach((point, idx) => {
+                const destination = `${point.coords[0]},${point.coords[1]}`;
+                const appleMapsUrl = `https://maps.apple.com/?saddr=${userLat},${userLng}&daddr=${destination}`;
 
-            const popupHTML = `
-                <strong>${idx + 1}. ${point.name}</strong><br>
-                ${point.desc}<br>
-                ⏰ ${point.time}<br>
-                📍 <a href="${appleMapsUrl}" target="_blank">התחל ניווט</a>
-            `;
+                const popupHTML = `
+                    <strong>${point.name}</strong><br>
+                    ${point.desc}<br>
+                    🕒 ${point.hours}<br>
+                    📍 <a href="${appleMapsUrl}" target="_blank">התחל ניווט</a>
+                `;
 
-            const icon = L.icon({
-                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-                iconSize: [30, 30],
-                iconAnchor: [15, 30],
-                popupAnchor: [0, -30],
-                className: 'custom-marker'
+                const icon = L.icon({
+                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 30],
+                    popupAnchor: [0, -30]
+                });
+
+                L.marker(point.coords, { icon })
+                    .addTo(map)
+                    .bindPopup(popupHTML)
+                    .on('mouseover', function () { this.openPopup(); });
             });
-
-            L.marker(point.coords, { icon }).addTo(map).bindPopup(popupHTML);
         });
-    }, err => {
-        alert("לא הצלחנו לזהות את המיקום שלך לצורך ניווט.");
-    });
+    }, () => alert("לא הצלחנו לאתר את מיקומך."));
 
+    // Toggle legend
     function toggleLegend() {
         const legend = document.getElementById("legend");
         legend.style.display = (legend.style.display === "none" || legend.style.display === "") ? "block" : "none";
     }
-</script>
 
+    // כפתור 'מצא אותי'
+    const locateButton = L.control({position: 'topleft'});
+    locateButton.onAdd = function(map) {
+        const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+        const button = L.DomUtil.create('a', '', div);
+        button.innerHTML = '📍';
+        button.href = '#';
+        button.title = 'הראה את מיקומי הנוכחי';
+
+        L.DomEvent.on(button, 'click', function(e) {
+            L.DomEvent.stopPropagation(e);
+            L.DomEvent.preventDefault(e);
+            map.locate({setView: true, maxZoom: 16});
+        });
+
+        return div;
+    };
+    locateButton.addTo(map);
+
+    map.on('locationfound', function(e) {
+        L.circle(e.latlng, {
+            radius: 30,
+            color: '#80c9ff',
+            fillColor: '#80c9ff',
+            fillOpacity: 0.5
+        }).addTo(map).bindPopup("אתה כאן").openPopup();
+    });
+
+    map.on('locationerror', function(e) {
+        alert("לא ניתן היה למצוא את מיקומך.");
+    });
+</script>
 </body>
 </html>
